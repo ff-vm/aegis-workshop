@@ -1,0 +1,20 @@
+# FF SDK devkit: proprietary, handed out separately. Never commit it.
+aegis_devkit/
+ff_sdk_aegis_devkit*.zip
+*.whl
+
+# Python
+.venv/
+.venv-*/
+__pycache__/
+*.pyc
+
+# Simulator and camera output
+run.html
+camera_snaps/
+
+# macOS
+.DS_Store
+
+# Local notes (robot IPs, users)
+HANDOFF.md

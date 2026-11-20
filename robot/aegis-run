@@ -1,0 +1,19 @@
+#!/bin/sh
+# Run a script with the SDK settings this robot needs, on the robot:
+#   ~/ff_app/aegis-run aegis_skills.py check
+#   ~/ff_app/aegis-run panel.py
+#
+# FF_SDK_AEGIS_HOST comes from target_ip in the robot's sdk_config.yaml (it has
+# been both 127.0.0.1 and 192.168.234.1); the native link only connects when
+# they match. Variant defaults to footed (rubber feet): left to auto-detect, the
+# SDK once picked the wheeled lib and the robot answered "sdk is dismatch".
+# Either can be overridden by setting it before calling.
+cd "$(dirname "$0")" || exit 1
+CFG=/opt/export/config/sdk_config.yaml
+if [ -z "${FF_SDK_AEGIS_HOST:-}" ] && [ -r "$CFG" ]; then
+  FF_SDK_AEGIS_HOST=$(sed -n 's/^target_ip:[[:space:]]*"\{0,1\}\([^"[:space:]]*\)"\{0,1\}.*/\1/p' "$CFG")
+fi
+export FF_SDK_AEGIS_HOST="${FF_SDK_AEGIS_HOST:-192.168.234.1}"
+export FF_SDK_AEGIS_VARIANT="${FF_SDK_AEGIS_VARIANT:-footed}"
+echo "aegis-run: FF_SDK_AEGIS_HOST=$FF_SDK_AEGIS_HOST FF_SDK_AEGIS_VARIANT=$FF_SDK_AEGIS_VARIANT" >&2
+exec ./venv/bin/python -u "$@"
