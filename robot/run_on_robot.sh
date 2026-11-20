@@ -28,7 +28,8 @@ APP_DIR='~/ff_app'
 
 cd "$(dirname "$0")"
 # The FF devkit is handed out separately: unzip it at the repo root (../aegis_devkit).
-WHEELS=(../aegis_devkit/wheels/ff_sdk-*-linux_aarch64.whl ../aegis_devkit/wheels/typing_extensions-*.whl)
+# typing_extensions (open source) ships in robot/wheels: the robot has no internet and the devkit zip lacks it.
+WHEELS=(../aegis_devkit/wheels/ff_sdk-*-linux_aarch64.whl wheels/typing_extensions-*.whl)
 [ -f "${WHEELS[0]}" ] || { echo "FF SDK not found: unzip ff_sdk_aegis_devkit.zip at the repo root first (aegis_devkit/)."; exit 1; }
 
 echo "==> pinging $ROBOT_IP"

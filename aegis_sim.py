@@ -1155,6 +1155,8 @@ def run_skill(routine, target: str | None = None) -> None:
             await dog.motion.stop()
             await dog.motion.damping()
             await asyncio.sleep(dog.motion.preset_timeout("damping"))
+            if not isinstance(dog, AegisSim):   # the real SDK prints nothing by itself
+                print(f"[skill] finished on {getattr(dog, 'target', 'the robot')}", file=sys.stderr)
         finally:
             await dog.close()
 

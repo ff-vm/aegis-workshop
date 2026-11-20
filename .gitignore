@@ -2,6 +2,7 @@
 aegis_devkit/
 ff_sdk_aegis_devkit*.zip
 *.whl
+!robot/wheels/typing_extensions-*.whl
 
 # Python
 .venv/

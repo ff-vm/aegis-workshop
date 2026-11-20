@@ -174,25 +174,28 @@ different turn size. Re-running the file shows the change in the simulator.
 Skip this unless the user has `ff_sdk_aegis_devkit.zip`. It's FF's
 proprietary SDK; **never upload or commit it** (it's already in `.gitignore`).
 It lets the same skill files run on the real SDK in **dry-run** (commands are
-checked but nothing moves). It needs Python **3.10 exactly**, and only ships
-for Linux and Windows.
+checked but nothing moves). The SDK is built for Python **3.10** on Linux and
+Windows only; on a Mac it runs inside Docker, which provides Python 3.10.
+Installing it needs internet: pip fetches one small dependency
+(`typing-extensions`) that isn't in the zip.
 
 1. Unzip it **in this folder**, so you get `aegis_devkit/wheels/` next to
    `START_HERE.md`.
 2. Install it:
    - **Linux / Windows:** make a second environment with Python 3.10
      (`python3.10 -m venv .venv-sdk`, Windows `py -3.10 -m venv .venv-sdk`;
-     ask before installing 3.10 if it's missing), then install offline from the
-     devkit:
-     `.venv-sdk/bin/python -m pip install --no-index --find-links aegis_devkit/wheels ff_sdk`
+     ask before installing 3.10 if it's missing), then install the SDK from
+     the devkit:
+     `.venv-sdk/bin/python -m pip install --find-links aegis_devkit/wheels ff_sdk`
      (Windows: `.venv-sdk\Scripts\python ...`).
-   - **macOS:** there's no Mac build, so it runs in Docker (ask before
-     installing Docker Desktop). From this folder:
+   - **macOS:** there's no Mac build, so it runs in Docker. Check Docker is
+     installed and running with `docker info`; if not, ask before installing
+     Docker Desktop, and the user has to start it once. From this folder:
      ```bash
      docker build --platform linux/arm64 -t ff-sdk -f - aegis_devkit/wheels <<'EOF'
      FROM python:3.10-slim
      COPY *.whl /tmp/
-     RUN pip install -q --no-index --find-links /tmp /tmp/ff_sdk-*-linux_aarch64.whl
+     RUN pip install -q --find-links /tmp /tmp/ff_sdk-*-linux_aarch64.whl
      WORKDIR /w
      EOF
      ```
@@ -201,5 +204,6 @@ for Linux and Windows.
    - Linux: `FF_TARGET=dry-run .venv-sdk/bin/python task1_routine.py`
    - macOS: `docker run --rm --platform linux/arm64 -v "$PWD":/w -e FF_TARGET=dry-run ff-sdk python -u task1_routine.py`
 
-   It runs silently for about 30 s and exits without errors: the real SDK
-   accepted every command.
+   It's quiet for about 30 s (the routine's waits), then prints
+   `[skill] finished on DEMO`: the real SDK accepted every command.
+   Run it from this folder (the Docker command shares the current folder).
