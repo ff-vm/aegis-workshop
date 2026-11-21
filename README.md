@@ -91,6 +91,10 @@ The robot's camera is read directly at `rtsp://192.168.234.1:8554/test`.
    ```bash
    ./robot/run_real.sh <user> spin_and_wave.py      # <user>: the robot's ssh account
    ```
+   Windows (PowerShell; ssh asks for the password in a second window):
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 <user> spin_and_wave.py
+   ```
 4. ssh asks for the robot's password once; type `yes` to confirm the floor is clear.
 5. Ctrl+C sends **passive** (motors off) right after the current 0.6 s step. The remote's e-stop is still the real one.
 
@@ -121,7 +125,7 @@ it misses real motion, lower it (`0.008`). Each detection is saved to
 
 | File | What it does |
 |---|---|
-| `run_real.sh` | Run a skill on the real dog through FF's gateway (above) |
+| `run_real.sh`, `run_real.ps1` | Run a skill on the real dog through FF's gateway (above; `.ps1` for Windows) |
 | `gateway.py` | Talks to FF's gateway: `stand`, `lie`, `limp`, `greet`, `shakehand`, `forward 1.5`, `square 2`, … |
 | `run_on_robot.sh` | Copy the tools to the robot, install the SDK there, run a gateway command or the panel: `./robot/run_on_robot.sh <user> stand` |
 | `panel.py`, `aegis-panel.service` | A phone-friendly control panel served by the robot at http://192.168.234.1:8000: `./robot/run_on_robot.sh <user> panel` |

@@ -19,3 +19,6 @@ camera_snaps/
 
 # Local notes (robot IPs, users)
 HANDOFF.md
+
+# Per-attendee cheat sheet (has their paths)
+my_cheatsheet.md

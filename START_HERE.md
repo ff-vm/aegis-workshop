@@ -252,12 +252,27 @@ open it any time to replay it with the time slider.
 If the browser didn't open by itself, tell them to open http://localhost:8765
 (or the address the terminal printed after `live view →`).
 
-## 8. Final message to the user
+## 8. Final message and cheat sheet
 
-Finish with one message that covers all of this, using their real folder path
-and their system's commands:
+The user will run things **without you** later: on the robot's Wi-Fi there's
+no internet, so Claude Code won't work there. So finish by giving them a
+step-by-step cheat sheet with every command written out to copy and paste.
 
-**Where everything is**: the full path of the workshop folder, and:
+1. Write the cheat sheet below to **`my_cheatsheet.md`** in the workshop folder:
+   - keep only **their** system's version (macOS / Linux *or* Windows);
+   - replace `<workshop folder>` with the real full path everywhere;
+   - drop the SDK lines if the SDK isn't installed.
+2. Open it for them (macOS `open my_cheatsheet.md`, Windows
+   `Start-Process my_cheatsheet.md`, Linux `xdg-open my_cheatsheet.md`).
+3. Your final message to the user, in this order:
+   - **Where everything is**: the full folder path, and the file table below.
+   - **What's running now**: the terminal window and browser tab from section 7.
+   - **The cheat sheet**: show it in full in the message (same text as the
+     file), and say it's saved as `my_cheatsheet.md` in their folder.
+   - **How to vibe code it** (below).
+   - **The rules**, in two or three lines.
+
+### Files
 
 | File | What it is |
 |---|---|
@@ -267,17 +282,181 @@ and their system's commands:
 | `motion_eyes.py` | The camera motion detector |
 | `run_demo.command` / `run_demo.bat` | Double-click to run the sequence again |
 | `run.html` | Replay of the last run |
+| `my_cheatsheet.md` | Your step-by-step commands |
 | `aegis_devkit/` | The FF SDK (if installed) |
 | `docs/developer-guide-en.html` | The workshop guide: schedule, rules, tasks, scoring |
 
-**What's running**: the terminal window and browser tab from section 7, and
-how to run it again (double-click the launcher, or the command).
+### Cheat sheet: macOS / Linux
 
-**How to vibe code it**: they don't need to write code by hand. They tell you
-what they want the dog to do, you edit the sequence and rerun it in the
-simulator, they watch it in the browser and say what to change. Repeat until
-the report says PASS, then take it to a test station. Give them a few
-prompts to try, for example:
+````markdown
+# Aegis workshop cheat sheet
+
+Workshop folder: `<workshop folder>`
+
+## A. Run a sequence in the simulator (any time, anywhere)
+
+1. Open **Terminal** (macOS: Cmd+Space, type "Terminal", Enter).
+2. Go to the workshop folder:
+   ```bash
+   cd "<workshop folder>"
+   ```
+3. Run the sequence. The dog's map opens in your browser by itself:
+   ```bash
+   FF_SIM_OPEN=1 .venv/bin/python spin_and_wave.py
+   ```
+   (Shortcut: double-click `run_demo.command` in the folder.)
+4. Watch the browser. The terminal ends with a report: **PASS** means it's
+   ready for a real robot. `run.html` in the folder replays the last run.
+5. Other sequences, same way:
+   ```bash
+   FF_SIM_OPEN=1 .venv/bin/python task1_routine.py
+   ```
+   ```bash
+   FF_SIM_OPEN=1 .venv/bin/python task3_triangle.py
+   ```
+6. Your laptop webcam as the dog's eyes (wave at the laptop while it looks):
+   ```bash
+   FF_CAMERA=0 FF_SIM_OPEN=1 .venv/bin/python spin_and_wave.py
+   ```
+7. Stop a run early: **Ctrl+C**.
+
+## B. Run it on the real robot (test station, mentor present)
+
+1. Get the mentor's OK. 1 m of clear floor all round the dog; the mentor
+   holds the remote with the **e-stop**.
+2. Ask the mentor for the robot's **user name** and **password**.
+3. Join the robot's Wi-Fi: **AEGIS-2A-…**. (Your internet stops while you're
+   on it. That's normal.)
+4. Open Terminal and go to the workshop folder:
+   ```bash
+   cd "<workshop folder>"
+   ```
+5. Optional: check the robot's camera (a window opens; `q` closes it):
+   ```bash
+   .venv/bin/python motion_eyes.py --source rtsp://192.168.234.1:8554/test
+   ```
+6. Run your sequence on the robot (put the mentor's user name in place of
+   `USER`):
+   ```bash
+   ./robot/run_real.sh USER spin_and_wave.py
+   ```
+7. Type the robot's password when asked, then type `yes` to confirm the floor
+   is clear. The browser shows the planned path while the dog moves.
+8. Stop: **Ctrl+C** (the dog goes limp after the current step). The mentor's
+   e-stop always works too.
+9. If it turns the wrong way, run again with:
+   ```bash
+   FF_GW_YAW_SIGN=-1 ./robot/run_real.sh USER spin_and_wave.py
+   ```
+10. When you're done, switch back to your normal Wi-Fi.
+
+## C. Check with the FF SDK (if it's installed)
+
+macOS (Docker Desktop must be running):
+```bash
+docker run --rm --platform linux/arm64 -v "$PWD":/w -e FF_TARGET=dry-run ff-sdk python -u task1_routine.py
+```
+Linux:
+```bash
+FF_TARGET=dry-run .venv-sdk/bin/python task1_routine.py
+```
+About 30 s later it prints `[skill] finished on DEMO`: the real SDK accepted
+every command. (Camera sequences like spin_and_wave need a real camera, so
+check those in the simulator instead.)
+
+## D. Change the sequence
+
+Ask Claude Code in plain words, for example "make it turn in 30° steps", then
+run step A3 again to see it.
+````
+
+### Cheat sheet: Windows
+
+````markdown
+# Aegis workshop cheat sheet
+
+Workshop folder: `<workshop folder>`
+
+## A. Run a sequence in the simulator (any time, anywhere)
+
+1. Open **PowerShell** (Start menu, type "PowerShell", Enter).
+2. Go to the workshop folder:
+   ```powershell
+   cd "<workshop folder>"
+   ```
+3. Run the sequence. The dog's map opens in your browser by itself:
+   ```powershell
+   $env:FF_SIM_OPEN=1; .venv\Scripts\python spin_and_wave.py
+   ```
+   (Shortcut: double-click `run_demo.bat` in the folder.)
+4. Watch the browser. The window ends with a report: **PASS** means it's
+   ready for a real robot. `run.html` in the folder replays the last run.
+5. Other sequences, same way:
+   ```powershell
+   .venv\Scripts\python task1_routine.py
+   ```
+   ```powershell
+   .venv\Scripts\python task3_triangle.py
+   ```
+6. Your laptop webcam as the dog's eyes (wave at the laptop while it looks):
+   ```powershell
+   $env:FF_CAMERA=0; .venv\Scripts\python spin_and_wave.py
+   ```
+   Settings like `$env:FF_CAMERA` stay on until you close the window; to
+   switch back to the simulated camera: `Remove-Item Env:FF_CAMERA`
+7. Stop a run early: **Ctrl+C**.
+
+## B. Run it on the real robot (test station, mentor present)
+
+1. Get the mentor's OK. 1 m of clear floor all round the dog; the mentor
+   holds the remote with the **e-stop**.
+2. Ask the mentor for the robot's **user name** and **password**.
+3. Join the robot's Wi-Fi: **AEGIS-2A-…**. (Your internet stops while you're
+   on it. That's normal.)
+4. Open PowerShell and go to the workshop folder:
+   ```powershell
+   cd "<workshop folder>"
+   ```
+5. Optional: check the robot's camera (a window opens; `q` closes it):
+   ```powershell
+   .venv\Scripts\python motion_eyes.py --source rtsp://192.168.234.1:8554/test
+   ```
+6. Run your sequence on the robot (put the mentor's user name in place of
+   `USER`):
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 USER spin_and_wave.py
+   ```
+7. A second window opens: type the robot's password there (type `yes` first
+   if it asks about the host key). Come back to the first window and type
+   `yes` to confirm the floor is clear.
+8. Stop: **Ctrl+C** in the first window (the dog goes limp after the current
+   step). The mentor's e-stop always works too.
+9. If it turns the wrong way, run again with:
+   ```powershell
+   $env:FF_GW_YAW_SIGN=-1; powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 USER spin_and_wave.py
+   ```
+10. When you're done, switch back to your normal Wi-Fi.
+
+## C. Check with the FF SDK (if it's installed)
+
+```powershell
+$env:FF_TARGET='dry-run'; .venv-sdk\Scripts\python task1_routine.py; Remove-Item Env:FF_TARGET
+```
+Ends with `[skill] finished on DEMO`: the real SDK accepted every command.
+
+## D. Change the sequence
+
+Ask Claude Code in plain words, for example "make it turn in 30° steps", then
+run step A3 again to see it.
+````
+
+### How to vibe code it (tell the user)
+
+They don't need to write code by hand. They tell you what they want the dog
+to do, you edit the sequence and rerun it in the simulator (with
+`FF_SIM_OPEN=1` so the browser opens), they watch and say what to change.
+Repeat until the report says PASS, then take it to a test station
+(cheat sheet B). Give them a few prompts to try:
 
 - "Make the dog look around in 30° steps instead of 45°."
 - "When it sees motion, shake hands and then lie down."
@@ -296,21 +475,8 @@ await dog.motion.stop()                     # stop
 await dog.motion.do_preset("shake_hand")    # offer a paw
 ```
 
-**The rules** (below), in two or three lines.
-
-Other things they can ask you to run:
-
-| Try | macOS / Linux | Windows (PowerShell) |
-|---|---|---|
-| Task 1: stand, walk, spin, shake hands, lie down | `.venv/bin/python task1_routine.py` | `.venv\Scripts\python task1_routine.py` |
-| Task 3: walk a triangle back to the start | `.venv/bin/python task3_triangle.py` | `.venv\Scripts\python task3_triangle.py` |
-| Laptop webcam as the dog's eyes | `FF_CAMERA=0 .venv/bin/python spin_and_wave.py` | `$env:FF_CAMERA=0; .venv\Scripts\python spin_and_wave.py` |
-| See what the motion detector sees (`q` closes it) | `.venv/bin/python motion_eyes.py --source 0` | `.venv\Scripts\python motion_eyes.py --source 0` |
-
-When you run a sequence for them later, add `FF_SIM_OPEN=1` (PowerShell:
-`$env:FF_SIM_OPEN=1;`) so the browser opens by itself. The webcam items ask
-for camera permission the first time; on macOS, allow it for the terminal app
-and run again.
+New sequence files go in the workshop folder next to `spin_and_wave.py`, so
+`run_real.sh` / `run_real.ps1` can find them.
 
 ## Rules to keep (tell the user these)
 
