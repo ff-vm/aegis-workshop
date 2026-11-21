@@ -3,24 +3,26 @@
 This file is written for **Claude Code** (or any coding assistant) to follow on
 an attendee's computer. People reading it themselves can follow the same steps.
 
-The person you're helping is probably **new to robotics and maybe to
-programming**. Explain each step in a sentence or two of plain language, say
-what you're about to install before you install it, and keep going unless
-something needs their decision.
+## How to work through this (for the assistant)
 
-At the end, they'll have:
+- **Run every command yourself.** Don't just show commands to the user and
+  stop: install, check, and fix as you go. The user should only have to answer
+  the questions marked **Ask**.
+- The user is probably **new to robotics and maybe to programming**. Before
+  each step, say in a sentence what it does and why, in plain language.
+- Only install things system-wide (Python, Docker) after the user says yes.
+- At the end, the user must know **where the files are**, see the first
+  sequence **running in its own terminal window and their browser**, and know
+  **how to change it by talking to you** (section 8).
 
-- the **Aegis simulator**: a robot dog on a top-down map in their browser, with
+What they'll have at the end:
+
+- the **Aegis simulator**: a robot dog on a top-down map in the browser, with
   the workshop's safety rules checked automatically;
 - the **spin-and-wave sequence**: the dog looks around and shakes hands when
   something moves in front of it;
-- everything installed inside one project folder (nothing system-wide except
-  Python, if it's missing).
-
-**The FF SDK is not needed** for any of this: the simulator is plain Python,
-and real-robot runs go through the robot's own control gateway. If the
-attendee was given the SDK file (`ff_sdk_aegis_devkit.zip`), there's an
-optional step at the end. Don't search for it or download it.
+- the **FF SDK** installed, if they were given it (on a Mac it runs inside
+  Docker, which you'll install for them).
 
 A few words they'll meet:
 
@@ -33,7 +35,29 @@ A few words they'll meet:
 
 ---
 
-## 1. Check Python
+## 1. Ask two things first
+
+Ask both in one message, and wait for the answers.
+
+1. **Ask: where should the workshop folder go?** Suggest a default:
+   `~/Documents/aegis-workshop` (Windows: `%USERPROFILE%\Documents\aegis-workshop`).
+   If the current folder is already a copy of this repository (it has
+   `START_HERE.md` and `aegis_sim.py`), say so and ask whether to use it.
+2. **Ask: did you download the FF SDK file (`ff_sdk_aegis_devkit.zip`) from the
+   workshop link? Where is it?** (Usually the Downloads folder.)
+   Tell them plainly:
+
+   > ⚠️ The FF SDK files must sit **in the workshop folder itself** (the top
+   > level, next to `START_HERE.md`), not in a subfolder and not elsewhere. I'll
+   > move the zip there and unpack it into `aegis_devkit/`. Without it the
+   > simulator still works, but the SDK features won't.
+
+   If they don't have it yet, carry on without it; section 6 can be done later.
+
+Remember the chosen folder; below it's called **the workshop folder**. Use its
+full path when you talk to the user.
+
+## 2. Check Python
 
 Needs **Python 3.9 or newer**.
 
@@ -44,97 +68,226 @@ python3 --version      # macOS / Linux
 py --version           # Windows
 ```
 
-If it's missing or older than 3.9, **stop and ask the user before installing
-it**, and suggest the usual way for their system:
+If it's missing or older than 3.9, **ask the user before installing it**,
+then install it:
 
-- macOS: the installer from https://www.python.org/downloads/ (or `brew install python` if they use Homebrew)
-- Windows: the installer from https://www.python.org/downloads/ (tick "Add python.exe to PATH"), or `winget install Python.Python.3.12`
-- Linux (Debian/Ubuntu): `sudo apt install python3 python3-venv`
+- macOS: `brew install python` if Homebrew is there; otherwise the installer
+  from https://www.python.org/downloads/ (the user clicks through it). A fresh
+  Mac may pop up "install command line developer tools" the first time
+  `python3` runs: tell them to click **Install** and wait, then retry.
+- Windows: `winget install Python.Python.3.12` (or the python.org installer,
+  ticking "Add python.exe to PATH"). Open a new terminal afterwards.
+- Linux (Debian/Ubuntu): `sudo apt install python3 python3-venv` (they type
+  their password).
 
-## 2. Get the code
+## 3. Get the code
 
-If you're not already inside a copy of this repository, clone it into the
-current folder (or one the user names):
+Clone into the workshop folder (skip if you're already in a copy):
 
 ```bash
-git clone https://github.com/ff-vm/aegis-workshop.git
-cd aegis-workshop
+git clone https://github.com/ff-vm/aegis-workshop.git "<workshop folder>"
+cd "<workshop folder>"
 ```
 
-No `git`? Download https://github.com/ff-vm/aegis-workshop/archive/refs/heads/main.zip,
-unzip it, and go into the `aegis-workshop-main` folder.
+No `git`? Download
+https://github.com/ff-vm/aegis-workshop/archive/refs/heads/main.zip, unzip it,
+and rename the `aegis-workshop-main` folder to the workshop folder. Then on
+macOS / Linux: `chmod +x run_demo.command robot/*.sh`.
 
-**Every command below runs from this folder** (the one with `START_HERE.md`).
+**Every command below runs from the workshop folder.**
 
-## 3. Install the libraries
+## 4. Install the libraries
 
 Make a virtual environment (a private Python just for this project, so nothing
-else on the computer changes) and install OpenCV, the camera library (~30 MB):
+else on the computer changes) and install everything in `requirements.txt`
+(OpenCV, the camera library, ~30 MB). Run these yourself:
 
 ```bash
 # macOS / Linux
 python3 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python -c "import cv2; print('OpenCV', cv2.__version__)"
 ```
 ```powershell
 # Windows
 py -m venv .venv
+.venv\Scripts\python -m pip install --upgrade pip
 .venv\Scripts\python -m pip install -r requirements.txt
 .venv\Scripts\python -c "import cv2; print('OpenCV', cv2.__version__)"
 ```
 
-The last line should print an OpenCV version.
+The last line must print an OpenCV version. If `pip install` fails on venue
+Wi-Fi, retry a couple of times before moving on.
 
-## 4. Run the sequence in the simulator
+## 5. Check the sequence works
 
-This is the sequence the workshop is built around. Tell the user what will
-happen, and ask them to **open http://localhost:8765 in their browser now**:
-the page waits for the run and fills in by itself.
-
-Then start it. It takes about 35 seconds. If you're an assistant, run it in
-the background (or with a timeout of at least 60 s) so you can talk to the
-user meanwhile:
+Run the sequence once without the browser, to make sure everything is in
+place (about 35 seconds; use a timeout of at least 90 s):
 
 ```bash
-.venv/bin/python spin_and_wave.py           # macOS / Linux
+FF_SIM_PORT=0 FF_SIM_OUT=off .venv/bin/python spin_and_wave.py                        # macOS / Linux
 ```
 ```powershell
-.venv\Scripts\python spin_and_wave.py       # Windows
+$env:FF_SIM_PORT=0; $env:FF_SIM_OUT='off'; .venv\Scripts\python spin_and_wave.py      # Windows
 ```
 
-In the browser they'll see:
+The report must end with `PASS: ready for a test station.` If it doesn't, fix
+it before going on. (In PowerShell, clear the two settings afterwards with
+`Remove-Item Env:FF_SIM_PORT, Env:FF_SIM_OUT`.)
+
+## 6. The FF SDK (if they have the zip)
+
+The FF SDK is FF's proprietary SDK: **never upload or commit it** (it's in
+`.gitignore`). With it, the same skill files run on the real SDK in
+**dry-run** (commands are checked, nothing moves). It's built for Python
+**3.10** on Linux and Windows only; **on a Mac it needs Docker**.
+
+### 6a. Put it in the workshop folder
+
+Move the zip from where the user said into the **top level** of the workshop
+folder and unzip it there:
+
+```bash
+mv ~/Downloads/ff_sdk_aegis_devkit.zip .        # use the path the user gave
+unzip -q ff_sdk_aegis_devkit.zip
+ls aegis_devkit/wheels                          # should list ff_sdk-*.whl files
+```
+```powershell
+Move-Item "$HOME\Downloads\ff_sdk_aegis_devkit.zip" .
+Expand-Archive ff_sdk_aegis_devkit.zip -DestinationPath .
+Get-ChildItem aegis_devkit\wheels
+```
+
+If the result isn't `aegis_devkit/wheels/` directly in the workshop folder
+(for example it unpacked to `ff_sdk_aegis_devkit/aegis_devkit/`), move
+`aegis_devkit` up to the top level.
+
+### 6b. Linux / Windows: install into a Python 3.10 environment
+
+```bash
+python3.10 -m venv .venv-sdk
+.venv-sdk/bin/python -m pip install --find-links aegis_devkit/wheels ff_sdk
+FF_TARGET=dry-run .venv-sdk/bin/python task1_routine.py
+```
+```powershell
+py -3.10 -m venv .venv-sdk
+.venv-sdk\Scripts\python -m pip install --find-links aegis_devkit\wheels ff_sdk
+$env:FF_TARGET='dry-run'; .venv-sdk\Scripts\python task1_routine.py; Remove-Item Env:FF_TARGET
+```
+
+If Python 3.10 is missing, ask, then install it (`winget install
+Python.Python.3.10`, or `sudo apt install python3.10 python3.10-venv` / the
+deadsnakes PPA on Ubuntu). pip fetches one small dependency
+(`typing-extensions`) from the internet.
+
+### 6c. macOS: install Docker, then the SDK inside it
+
+1. Check Docker: `docker info`.
+   - Works → go to step 3.
+   - `/Applications/Docker.app` exists but `docker info` fails → it's not
+     running: `open -a Docker`, then go to step 2's last part (waiting).
+   - Not installed → step 2.
+2. **Ask: "To run the FF SDK on a Mac I need to install Docker Desktop (a free
+   app, ~570 MB download). OK?"** On yes, install it:
+   ```bash
+   ARCH=$( [ "$(uname -m)" = arm64 ] && echo arm64 || echo amd64 )
+   curl -fL -o "$TMPDIR/Docker.dmg" "https://desktop.docker.com/mac/main/$ARCH/Docker.dmg"
+   hdiutil attach -nobrowse -quiet "$TMPDIR/Docker.dmg"
+   cp -R /Volumes/Docker/Docker.app /Applications/ || cp -R /Volumes/Docker/Docker.app ~/Applications/
+   hdiutil detach -quiet /Volumes/Docker
+   rm "$TMPDIR/Docker.dmg"
+   open -a Docker
+   ```
+   Tell the user: **a Docker window opens; click Accept on the agreement, pick
+   "Use recommended settings" (it asks for their Mac password), and skip the
+   sign-in.** Then wait for Docker to start, checking every few seconds for up
+   to 3 minutes:
+   ```bash
+   export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin"
+   for i in $(seq 36); do docker info >/dev/null 2>&1 && echo "Docker ready" && break; sleep 5; done
+   ```
+   If it isn't ready, ask whether the Docker window is still waiting for a
+   click.
+3. Build the SDK image (Apple silicon; on an Intel Mac use `linux/amd64` and
+   the `linux_x86_64` wheel):
+   ```bash
+   docker build --platform linux/arm64 -t ff-sdk -f - aegis_devkit/wheels <<'EOF'
+   FROM python:3.10-slim
+   COPY *.whl /tmp/
+   RUN pip install -q --find-links /tmp /tmp/ff_sdk-*-linux_aarch64.whl
+   WORKDIR /w
+   EOF
+   ```
+4. Check it:
+   ```bash
+   docker run --rm --platform linux/arm64 -v "$PWD":/w -e FF_TARGET=dry-run ff-sdk python -u task1_routine.py
+   ```
+
+On every system the check is quiet for about 30 s (the routine's waits), then
+prints `[skill] finished on DEMO`: the real SDK accepted every command.
+
+## 7. Open it for them
+
+Now start the sequence **in its own terminal window**, with the live view in
+their browser. The launcher scripts in the workshop folder do both:
+
+| System | Command you run |
+|---|---|
+| macOS | `open run_demo.command` |
+| Windows | `Start-Process run_demo.bat` (from cmd: `start run_demo.bat`) |
+| Linux | `x-terminal-emulator -e ./run_demo.command` (or `gnome-terminal -- ./run_demo.command`) |
+
+A terminal window opens, the dog's map opens in the browser
+(http://localhost:8765), and they'll see:
 
 - the dog stand up, then turn in 45° steps;
 - at each stop, a blue wedge for what its camera sees;
 - someone pacing behind it. When the dog turns to face them it spots the
   motion (the dot turns green), stops, and **shakes hands**.
 
-When it finishes, the terminal prints a report. Show the user the whole
-report; it should end with `PASS: ready for a test station.` (Progress lines
-like `Looking (3/8)…` may appear after it; that's normal.)
+The terminal ends with a report and `PASS`. The run is saved as `run.html`:
+open it any time to replay it with the time slider.
 
-The live page stops updating when the run ends, but the run is saved as
-**`run.html`** in this folder: open it in a browser any time to replay it with
-the time slider.
+If the browser didn't open by itself, tell them to open http://localhost:8765
+(or the address the terminal printed after `live view →`).
 
-## 5. Show them what else they can do
+## 8. Final message to the user
 
-Give the user this menu, with the commands for their system:
+Finish with one message that covers all of this, using their real folder path
+and their system's commands:
 
-| Try | macOS / Linux | Windows (PowerShell) |
-|---|---|---|
-| The spin-and-wave sequence again | `.venv/bin/python spin_and_wave.py` | `.venv\Scripts\python spin_and_wave.py` |
-| Task 1: stand, walk, spin, shake hands, lie down | `.venv/bin/python task1_routine.py` | `.venv\Scripts\python task1_routine.py` |
-| Task 3: walk a triangle back to the start | `.venv/bin/python task3_triangle.py` | `.venv\Scripts\python task3_triangle.py` |
-| Your **laptop webcam** as the dog's eyes (wave at the laptop while the sim dog looks) | `FF_CAMERA=0 .venv/bin/python spin_and_wave.py` | `$env:FF_CAMERA=0; .venv\Scripts\python spin_and_wave.py` |
-| See what the motion detector sees (a window opens; `q` closes it) | `.venv/bin/python motion_eyes.py --source 0` | `.venv\Scripts\python motion_eyes.py --source 0` |
+**Where everything is**: the full path of the workshop folder, and:
 
-The webcam items ask for camera permission the first time. On macOS, allow
-it for the terminal app, then run the command again.
+| File | What it is |
+|---|---|
+| `spin_and_wave.py` | The sequence you just watched |
+| `task1_routine.py`, `task3_triangle.py` | Two more examples (a routine; a walked triangle) |
+| `aegis_sim.py` | The simulator (no need to edit it) |
+| `motion_eyes.py` | The camera motion detector |
+| `run_demo.command` / `run_demo.bat` | Double-click to run the sequence again |
+| `run.html` | Replay of the last run |
+| `aegis_devkit/` | The FF SDK (if installed) |
+| `docs/developer-guide-en.html` | The workshop guide: schedule, rules, tasks, scoring |
 
-Then explain, briefly, how a sequence is written: open `spin_and_wave.py`
-and point at `routine(dog)`. Every robot command is one line:
+**What's running**: the terminal window and browser tab from section 7, and
+how to run it again (double-click the launcher, or the command).
+
+**How to vibe code it**: they don't need to write code by hand. They tell you
+what they want the dog to do, you edit the sequence and rerun it in the
+simulator, they watch it in the browser and say what to change. Repeat until
+the report says PASS, then take it to a test station. Give them a few
+prompts to try, for example:
+
+- "Make the dog look around in 30° steps instead of 45°."
+- "When it sees motion, shake hands and then lie down."
+- "Before shaking hands, turn to face where the motion was."
+- "Make a new sequence: walk forward half a metre, turn around, and come back."
+- "Make it wiggle left and right three times like a little dance."
+- "Use my laptop webcam as the dog's eyes, so it shakes hands when I wave."
+- "Explain what each line of `routine(dog)` in spin_and_wave.py does."
+
+And show the four lines everything is built from:
 
 ```python
 await dog.motion.stand()                    # stand up
@@ -143,14 +296,27 @@ await dog.motion.stop()                     # stop
 await dog.motion.do_preset("shake_hand")    # offer a paw
 ```
 
-Offer to help them change it, for example a different trick, more steps, or a
-different turn size. Re-running the file shows the change in the simulator.
+**The rules** (below), in two or three lines.
+
+Other things they can ask you to run:
+
+| Try | macOS / Linux | Windows (PowerShell) |
+|---|---|---|
+| Task 1: stand, walk, spin, shake hands, lie down | `.venv/bin/python task1_routine.py` | `.venv\Scripts\python task1_routine.py` |
+| Task 3: walk a triangle back to the start | `.venv/bin/python task3_triangle.py` | `.venv\Scripts\python task3_triangle.py` |
+| Laptop webcam as the dog's eyes | `FF_CAMERA=0 .venv/bin/python spin_and_wave.py` | `$env:FF_CAMERA=0; .venv\Scripts\python spin_and_wave.py` |
+| See what the motion detector sees (`q` closes it) | `.venv/bin/python motion_eyes.py --source 0` | `.venv\Scripts\python motion_eyes.py --source 0` |
+
+When you run a sequence for them later, add `FF_SIM_OPEN=1` (PowerShell:
+`$env:FF_SIM_OPEN=1;`) so the browser opens by itself. The webcam items ask
+for camera permission the first time; on macOS, allow it for the terminal app
+and run again.
 
 ## Rules to keep (tell the user these)
 
 - **Speed limits:** walking at most 0.3 m/s, turning at most 0.6 rad/s. The
   simulator plays the mentor: it stops the dog and fails the run if a sequence
-  goes faster. Don't raise the limits.
+  goes faster. Don't raise the limits, even if asked.
 - **Allowed tricks:** only `shake_hand` and `lie_down`. Others (jumps,
   backflip) are blocked.
 - **Real robots** run only at a test station, with a mentor holding the
@@ -164,46 +330,8 @@ different turn size. Re-running the file shows the change in the simulator.
 |---|---|
 | `pip install` fails on venue Wi-Fi | Retry. If it keeps failing, the simulator itself still works without OpenCV: `python3 task1_routine.py` (no camera features) |
 | The page shows an old run, or nothing | A previous run was still going, so this one used the next port: the terminal prints the address (`live view → http://localhost:8766`). Or stop the old one (macOS / Linux: `pkill -f spin_and_wave`) and run again |
+| `run_demo.command` "can't be opened" (macOS) | `chmod +x run_demo.command`, or right-click it → Open |
 | Webcam window doesn't open (macOS) | System Settings → Privacy & Security → Camera → allow the terminal app |
 | `?` instead of ✓ or → (Windows) | Harmless. Run `chcp 65001` first for proper symbols |
-
----
-
-## Optional: the FF SDK (only if the attendee was given it)
-
-Skip this unless the user has `ff_sdk_aegis_devkit.zip`. It's FF's
-proprietary SDK; **never upload or commit it** (it's already in `.gitignore`).
-It lets the same skill files run on the real SDK in **dry-run** (commands are
-checked but nothing moves). The SDK is built for Python **3.10** on Linux and
-Windows only; on a Mac it runs inside Docker, which provides Python 3.10.
-Installing it needs internet: pip fetches one small dependency
-(`typing-extensions`) that isn't in the zip.
-
-1. Unzip it **in this folder**, so you get `aegis_devkit/wheels/` next to
-   `START_HERE.md`.
-2. Install it:
-   - **Linux / Windows:** make a second environment with Python 3.10
-     (`python3.10 -m venv .venv-sdk`, Windows `py -3.10 -m venv .venv-sdk`;
-     ask before installing 3.10 if it's missing), then install the SDK from
-     the devkit:
-     `.venv-sdk/bin/python -m pip install --find-links aegis_devkit/wheels ff_sdk`
-     (Windows: `.venv-sdk\Scripts\python ...`).
-   - **macOS:** there's no Mac build, so it runs in Docker. Check Docker is
-     installed and running with `docker info`; if not, ask before installing
-     Docker Desktop, and the user has to start it once. From this folder:
-     ```bash
-     docker build --platform linux/arm64 -t ff-sdk -f - aegis_devkit/wheels <<'EOF'
-     FROM python:3.10-slim
-     COPY *.whl /tmp/
-     RUN pip install -q --find-links /tmp /tmp/ff_sdk-*-linux_aarch64.whl
-     WORKDIR /w
-     EOF
-     ```
-     (Intel Mac: `linux/amd64` and the `linux_x86_64` wheel.)
-3. Check it: run `task1_routine.py` with `FF_TARGET=dry-run`:
-   - Linux: `FF_TARGET=dry-run .venv-sdk/bin/python task1_routine.py`
-   - macOS: `docker run --rm --platform linux/arm64 -v "$PWD":/w -e FF_TARGET=dry-run ff-sdk python -u task1_routine.py`
-
-   It's quiet for about 30 s (the routine's waits), then prints
-   `[skill] finished on DEMO`: the real SDK accepted every command.
-   Run it from this folder (the Docker command shares the current folder).
+| `docker: command not found` after installing | `export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin"`, or finish Docker's first-run window |
+| SDK install can't find `ff_sdk` | The zip isn't unpacked at the top of the workshop folder: `aegis_devkit/wheels/` must be next to `START_HERE.md` |

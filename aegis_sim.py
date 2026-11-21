@@ -34,6 +34,7 @@ Simulator settings (environment variables):
     FF_SIM_PORT     8765             viewer port
     FF_SIM_OUT      run.html         replay file
     FF_SIM_HOLD     seconds          keep the viewer up after the run (default 3)
+    FF_SIM_OPEN     1                open the live view in the browser when the run starts
 
 Standard library only. Python 3.9+.
 """
@@ -855,6 +856,7 @@ class AegisSim:
               f"{f' · slip {w.slip:.0%}' if w.slip else ''}", file=sys.stderr)
         if dog._viewer.url:
             print(f"[sim] live view → {dog._viewer.url}", file=sys.stderr, flush=True)
+            dog._viewer.open_browser()
         w.log("info", f"connected to sim://aegis ({w.variant})", echo=False)
         return dog
 
@@ -1064,6 +1066,15 @@ class _Viewer:
         with w.lock:
             return {"meta": w.meta(), "frames": list(w.frames), "events": list(w.events),
                     "report": w.report}
+
+    def open_browser(self) -> None:
+        """FF_SIM_OPEN=1: open the live view in the default browser."""
+        if self.url and _env("FF_SIM_OPEN", "").lower() in ("1", "yes", "on", "true"):
+            try:
+                import webbrowser
+                webbrowser.open(self.url)
+            except Exception:
+                pass
 
     def save_replay(self) -> Path | None:
         out = _env("FF_SIM_OUT", "run.html")

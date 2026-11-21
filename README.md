@@ -5,15 +5,20 @@ your laptop, then run it on the real robot at a test station.
 
 ## Get started
 
-Paste this into **Claude Code**. It installs everything and runs the first
-sequence for you:
+1. Download the FF SDK file (`ff_sdk_aegis_devkit.zip`) from the link you were
+   given. It has to end up **in the workshop folder itself** (next to
+   `START_HERE.md`); Claude Code moves it there for you.
+2. Paste this into **Claude Code**. It asks where to put the workshop, installs
+   everything (Python libraries, the SDK, and Docker on a Mac), and opens the
+   first sequence in a terminal and your browser:
 
 ```
-Clone https://github.com/ff-vm/aegis-workshop and follow the instructions in START_HERE.md
+Set up the Aegis robot workshop from https://github.com/ff-vm/aegis-workshop: ask me where to put it, clone it there, then open START_HERE.md in the clone and follow every step, running the commands yourself.
 ```
 
-Or follow [START_HERE.md](START_HERE.md) yourself. You need Python 3.9+, and
-~30 MB of downloads (OpenCV). The FF SDK isn't needed.
+Or follow [START_HERE.md](START_HERE.md) yourself. You need Python 3.9+ and
+~30 MB of downloads (OpenCV); the SDK on a Mac also needs Docker Desktop
+(~570 MB). The simulator works without the SDK.
 
 ## What's here
 
@@ -25,6 +30,7 @@ Or follow [START_HERE.md](START_HERE.md) yourself. You need Python 3.9+, and
 | `motion_eyes.py` | Spots motion in the camera picture (OpenCV, no AI models); `--source 0` previews your webcam |
 | `task1_routine.py` | Task 1: stand, walk, spin, shake hands, lie down |
 | `task3_triangle.py` | Task 3: walk a 1 m triangle back to the start |
+| `run_demo.command` / `run_demo.bat` | Double-click to run the demo sequence with the live view (macOS / Windows) |
 | `robot/` | Mentor tools for the real robot (below) |
 | `docs/developer-guide-en.html` | The workshop guide: schedule, rules, SDK reference, tasks, scoring |
 
@@ -63,6 +69,7 @@ simulator, on the FF SDK in dry-run, and on the real robot.
 | `FF_SIM_POSE` | `off` makes `pose()` return NaN, like a robot without position feedback | `on` |
 | `FF_SIM_PORT` | live view port, `0` turns it off | `8765` |
 | `FF_SIM_OUT` | replay file, `off` for none | `run.html` |
+| `FF_SIM_OPEN` | `1` opens the live view in the browser | off (on in `run_demo`) |
 | `FF_CAMERA` | `sim`, a webcam number (`0`), or an RTSP URL | `sim` in the simulator, the robot's camera on the robot |
 | `FF_MOTION_AREA` | share of the picture that must change to count as motion | `0.015` |
 
