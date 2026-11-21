@@ -10,8 +10,8 @@ Run without a robot (dry-run):
 
 There is no macOS build. From a Mac, run it on the robot itself (it ships
 Python 3.10); see aegis_devkit/docs/deployment.md:
-    scp aegis_devkit/wheels/ff_sdk-*-linux_aarch64.whl aegis_skills.py <user>@<robot-ip>:/tmp/
-    ssh <user>@<robot-ip>
+    scp aegis_devkit/wheels/ff_sdk-*-linux_aarch64.whl aegis_skills.py firefly@<robot-ip>:/tmp/
+    ssh firefly@<robot-ip>
     python3 -m venv ~/ff_app/venv && ~/ff_app/venv/bin/pip install /tmp/ff_sdk-*.whl
     cd /tmp && FF_SDK_DRY_RUN=1 ~/ff_app/venv/bin/python aegis_skills.py greet
 

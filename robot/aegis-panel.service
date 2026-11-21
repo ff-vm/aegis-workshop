@@ -1,5 +1,5 @@
 # systemd user service: start the web control panel when the robot boots.
-# Installed by `./run_on_robot.sh <user> panel-install`. The panel never moves
+# Installed by `./run_on_robot.sh firefly panel-install`. The panel never moves
 # the dog on its own; it waits for someone to press a button.
 [Unit]
 Description=Aegis web control panel (ff_sdk)

@@ -3,7 +3,7 @@ move in front of it, it offers a paw (shake_hand).
 
     python3 spin_and_wave.py                           # simulator
     FF_CAMERA=0 .venv/bin/python spin_and_wave.py      # sim dog, your laptop webcam as its eyes
-    ./robot/run_real.sh <user> spin_and_wave.py        # real dog + its camera (mentors, on the hotspot)
+    ./robot/run_real.sh firefly spin_and_wave.py        # real dog + its camera (mentors, on the hotspot)
 
 A turning dog sees the whole picture move, so it can only notice motion while
 it stands still. So it turns ~45°, stops, lets its body settle, watches for a

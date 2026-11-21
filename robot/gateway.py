@@ -13,7 +13,7 @@ Stdlib only, plain python3. On the robot:
     python3 gateway.py limp               # motors off: the dog slumps down
 
 From the Mac:
-    ssh <user>@192.168.234.1 python3 - stand < gateway.py
+    ssh firefly@192.168.234.1 python3 - stand < gateway.py
 
 Commands seen working: stand, lie, passive (limp). The tricks are forwarded by
 the gateway to the motion gateway on :8765 (per FF's Aegis README).

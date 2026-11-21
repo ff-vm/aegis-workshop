@@ -392,7 +392,7 @@ Workshop folder: `<workshop folder>`
 - Your sequence says **PASS** in the simulator (part A).
 - You're at a **test station** with a mentor. The mentor holds the remote with
   the **stop button**.
-- Ask the mentor for the robot's **user name** and **password**.
+- Ask the mentor for the robot's **password**.
 - The dog has about **1 metre of empty floor** all around it.
 
 **Step 1. Connect to the robot's Wi-Fi.**
@@ -410,10 +410,9 @@ cd "<workshop folder>"
 ```
 
 **Step 4. Start your sequence on the robot.**
-Copy this line and paste it into Terminal. **Before pressing Enter, change
-`USER` to the user name the mentor gave you.**
+Copy this line, paste it into Terminal, press **Enter**:
 ```bash
-./robot/run_real.sh USER spin_and_wave.py
+./robot/run_real.sh firefly spin_and_wave.py
 ```
 (For a different sequence, change `spin_and_wave.py` to its file name.)
 
@@ -436,11 +435,11 @@ Switch your Wi-Fi back to your normal network.
 **If something goes wrong**
 
 - *"Robot not reachable"*: you're not on the robot's Wi-Fi. Do step 1 again.
-- *"Permission denied"*: wrong user name or password. Check with the mentor
+- *"Permission denied"*: wrong password. Check with the mentor
   and do step 4 again.
 - *The dog turns the wrong way*: use this line in step 4 instead:
   ```bash
-  FF_GW_YAW_SIGN=-1 ./robot/run_real.sh USER spin_and_wave.py
+  FF_GW_YAW_SIGN=-1 ./robot/run_real.sh firefly spin_and_wave.py
   ```
 - *Want to check the robot's camera first?* (The dog doesn't move; press `q`
   to close the window.)
@@ -511,7 +510,7 @@ Workshop folder: `<workshop folder>`
 - Your sequence says **PASS** in the simulator (part A).
 - You're at a **test station** with a mentor. The mentor holds the remote with
   the **stop button**.
-- Ask the mentor for the robot's **user name** and **password**.
+- Ask the mentor for the robot's **password**.
 - The dog has about **1 metre of empty floor** all around it.
 
 **Step 1. Connect to the robot's Wi-Fi.**
@@ -529,10 +528,9 @@ cd "<workshop folder>"
 ```
 
 **Step 4. Start your sequence on the robot.**
-Copy this line and paste it into PowerShell. **Before pressing Enter, change
-`USER` to the user name the mentor gave you.**
+Copy this line, paste it into PowerShell, press **Enter**:
 ```powershell
-powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 USER spin_and_wave.py
+powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 firefly spin_and_wave.py
 ```
 (For a different sequence, change `spin_and_wave.py` to its file name.)
 
@@ -557,13 +555,13 @@ Switch your Wi-Fi back to your normal network.
 **If something goes wrong**
 
 - *"Robot not reachable"*: you're not on the robot's Wi-Fi. Do step 1 again.
-- *"ssh closed (wrong password?)"*: wrong user name or password. Check with
+- *"ssh closed (wrong password?)"*: wrong password. Check with
   the mentor and do step 4 again.
 - *"ssh not found"*: Settings → System → Optional features → add
   **OpenSSH Client**, then do step 4 again.
 - *The dog turns the wrong way*: use this line in step 4 instead:
   ```powershell
-  $env:FF_GW_YAW_SIGN=-1; powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 USER spin_and_wave.py
+  $env:FF_GW_YAW_SIGN=-1; powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 firefly spin_and_wave.py
   ```
 - *Want to check the robot's camera first?* (The dog doesn't move; press `q`
   to close the window.)

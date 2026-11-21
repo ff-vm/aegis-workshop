@@ -5,7 +5,7 @@ Listens on UDP 8080, where the robot pushes its state, for a few seconds and
 prints one sample of each message type. Sends nothing, moves nothing, needs
 no SDK. Run it on the robot straight from the Mac:
 
-    ssh <user>@192.168.234.1 python3 - < robot_info.py
+    ssh firefly@192.168.234.1 python3 - < robot_info.py
 
 Useful when asking FF which SDK build matches this unit.
 """
@@ -47,7 +47,7 @@ while time.time() < end:
 
 if not seen:
     print("no packets - the robot may only push state after a client says hello.\n"
-          "Run './robot/run_on_robot.sh <user>' (check) in another terminal while this listens.")
+          "Run './robot/run_on_robot.sh firefly' (check) in another terminal while this listens.")
 for kind in sorted(seen, key=lambda k: (k not in WANT, k)):
     addr, text = seen[kind]
     print(f"\n== {kind}  (from {addr[0]})\n{text[:1500]}")

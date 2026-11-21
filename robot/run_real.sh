@@ -3,7 +3,7 @@
 # on this laptop. Commands go to FF's control gateway on the robot through an
 # ssh tunnel (the gateway only listens on the robot's 127.0.0.1:8768).
 #
-#   ./robot/run_real.sh <user> spin_and_wave.py   # <user>: the robot's ssh account
+#   ./robot/run_real.sh firefly spin_and_wave.py
 #
 # Skill files are at the repo root; the script runs from there.
 #
@@ -14,8 +14,8 @@
 #      FF_GW_YAW_SIGN=-1 if the dog turns the wrong way.
 set -euo pipefail
 
-USER_NAME="${1:?usage: ./robot/run_real.sh <user> <skill.py>}"
-SKILL="${2:?usage: ./robot/run_real.sh <user> <skill.py>}"
+USER_NAME="${1:?usage: ./robot/run_real.sh firefly <skill.py>}"
+SKILL="${2:?usage: ./robot/run_real.sh firefly <skill.py>}"
 ROBOT_IP="${ROBOT_IP:-192.168.234.1}"
 LOCAL_PORT="${GW_LOCAL_PORT:-18768}"
 HOST="$USER_NAME@$ROBOT_IP"

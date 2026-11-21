@@ -2,7 +2,7 @@
 # simulator's live view and rule checks on this laptop. Commands go to FF's
 # control gateway on the robot through an ssh tunnel.
 #
-#   powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 <user> spin_and_wave.py
+#   powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 firefly spin_and_wave.py
 #
 # Join the robot's Wi-Fi hotspot first (AEGIS-2A-...). A second window opens
 # for ssh: type the robot's password there. 1 m of clear floor all round,

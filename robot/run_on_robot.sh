@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Copy the skill pack to the Aegis, install the SDK there (offline), and run a skill.
 #
-#   ./run_on_robot.sh <user> [skill] [extra args...]
+#   ./run_on_robot.sh firefly [skill] [extra args...]
 #
 #   ./run_on_robot.sh myuser              # copy + install + status (doesn't move)
 #   ./run_on_robot.sh myuser stand        # through FF's gateway (gateway.py):
@@ -19,7 +19,7 @@
 # Join the robot's Wi-Fi hotspot first. ssh asks for the password once.
 set -euo pipefail
 
-USER_NAME="${1:?usage: ./run_on_robot.sh <user> [skill] [args...]}"
+USER_NAME="${1:?usage: ./run_on_robot.sh firefly [skill] [args...]}"
 SKILL="${2:-status}"
 shift $(( $# >= 2 ? 2 : 1 ))
 ROBOT_IP="${ROBOT_IP:-192.168.234.1}"

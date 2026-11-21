@@ -2,7 +2,7 @@
 
     python task1_routine.py                       # simulator (default)
     FF_TARGET=dry-run python task1_routine.py     # real ff_sdk, dry-run
-    ./robot/run_real.sh <user> task1_routine.py   # real dog (mentors, test station)
+    ./robot/run_real.sh firefly task1_routine.py   # real dog (mentors, test station)
 """
 import asyncio
 import os
