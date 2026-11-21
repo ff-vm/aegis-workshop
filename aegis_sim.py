@@ -898,6 +898,7 @@ class AegisSim:
         print(f"[sim] Aegis simulator + REAL ROBOT · task {w.task} · {w.variant}", file=sys.stderr)
         if dog._viewer.url:
             print(f"[sim] live view (planned path) → {dog._viewer.url}", file=sys.stderr, flush=True)
+            dog._viewer.open_browser()
         w.log("info", f"connected to the robot through {url}", echo=False)
         return dog
 

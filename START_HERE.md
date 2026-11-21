@@ -77,16 +77,25 @@ Ask both in one message, and wait for the answers.
    `~/Documents/aegis-workshop` (Windows: `%USERPROFILE%\Documents\aegis-workshop`).
    If the current folder is already a copy of this repository (it has
    `START_HERE.md` and `aegis_sim.py`), say so and ask whether to use it.
-2. **Ask: did you download the FF SDK file (`ff_sdk_aegis_devkit.zip`) from the
-   workshop link? Where is it?** (Usually the Downloads folder.)
-   Tell them plainly:
+2. **Ask about the FF SDK, and flag it exactly like this** (copy this block
+   into your message as it is, emoji included):
 
-   > ⚠️ The FF SDK files must sit **in the workshop folder itself** (the top
-   > level, next to `START_HERE.md`), not in a subfolder and not elsewhere. I'll
-   > move the zip there and unpack it into `aegis_devkit/`. Without it the
-   > simulator still works, but the SDK features won't.
+   > 🚨🚨 **IMPORTANT: the FF SDK must be copied into your workshop folder** 🚨🚨
+   >
+   > 📦 Did you download the FF SDK from the workshop link? It's a file called
+   > `ff_sdk_aegis_devkit.zip` (or, if your computer already unzipped it, a
+   > folder called `aegis_devkit`). **Where is it?** It's usually in your
+   > **Downloads** folder.
+   >
+   > 📁 It has to go **directly inside the workshop folder**, next to
+   > `START_HERE.md`, not in a subfolder and not anywhere else. I'll copy it
+   > there and unpack it for you.
+   >
+   > ⚠️ Without it, the simulator still works, but the FF SDK part of setup
+   > is skipped.
 
-   If they don't have it yet, carry on without it; section 6 can be done later.
+   If they don't have it yet, carry on without it, and flag it again in your
+   final message (section 8) so they don't forget.
 
 Remember the chosen folder; below it's called **the workshop folder**. Use its
 full path when you talk to the user.
@@ -177,25 +186,38 @@ The FF SDK is FF's proprietary SDK: **never upload or commit it** (it's in
 **dry-run** (commands are checked, nothing moves). It's built for Python
 **3.10** on Linux and Windows only; **on a Mac it needs Docker**.
 
-### 6a. Put it in the workshop folder
+### 6a. 🚨 Copy the SDK into the workshop folder
 
-Move the zip from where the user said into the **top level** of the workshop
-folder and unzip it there:
+Tell the user: "🚨 Copying the FF SDK into your workshop folder now." Copy it
+from where they said into the **top level** of the workshop folder (copy, so
+their download stays where it is):
 
+If it's the **zip**:
 ```bash
-mv ~/Downloads/ff_sdk_aegis_devkit.zip .        # use the path the user gave
+cp ~/Downloads/ff_sdk_aegis_devkit.zip .        # use the path the user gave
 unzip -q ff_sdk_aegis_devkit.zip
-ls aegis_devkit/wheels                          # should list ff_sdk-*.whl files
 ```
 ```powershell
-Move-Item "$HOME\Downloads\ff_sdk_aegis_devkit.zip" .
+Copy-Item "$HOME\Downloads\ff_sdk_aegis_devkit.zip" .
 Expand-Archive ff_sdk_aegis_devkit.zip -DestinationPath .
-Get-ChildItem aegis_devkit\wheels
 ```
 
-If the result isn't `aegis_devkit/wheels/` directly in the workshop folder
-(for example it unpacked to `ff_sdk_aegis_devkit/aegis_devkit/`), move
-`aegis_devkit` up to the top level.
+If it's already an **`aegis_devkit` folder**:
+```bash
+cp -R ~/Downloads/aegis_devkit .                # use the path the user gave
+```
+```powershell
+Copy-Item -Recurse "$HOME\Downloads\aegis_devkit" .
+```
+
+Then check it landed in the right place:
+```bash
+ls aegis_devkit/wheels          # Windows: Get-ChildItem aegis_devkit\wheels
+```
+It must list `ff_sdk-…whl` files. If it unpacked somewhere deeper (for
+example `ff_sdk_aegis_devkit/aegis_devkit/`), move `aegis_devkit` up so it
+sits directly in the workshop folder, then check again. Tell the user: "✅ The
+FF SDK is in your workshop folder: `<workshop folder>/aegis_devkit`."
 
 ### 6b. Linux / Windows: install into a Python 3.10 environment
 
@@ -300,11 +322,20 @@ step-by-step cheat sheet with every command written out to copy and paste.
    `Start-Process my_cheatsheet.md`, Linux `xdg-open my_cheatsheet.md`).
 3. Your final message to the user, in this order:
    - **Where everything is**: the full folder path, and the file table below.
+   - **The SDK**: either "✅ The FF SDK is installed, in
+     `<workshop folder>/aegis_devkit`", or, if it isn't there yet, this flag:
+     "🚨 **The FF SDK isn't in your workshop folder yet.** Download
+     `ff_sdk_aegis_devkit.zip` from the workshop link, then tell me where it
+     is and I'll copy it in and finish the setup (section 6)."
    - **What's running now**: the terminal window and browser tab from section 7.
-   - **The cheat sheet**: show it in full in the message (same text as the
-     file), and say it's saved as `my_cheatsheet.md` in their folder.
    - **How to vibe code it** (below).
    - **The rules**, in two or three lines.
+   - Last, under the heading **"Next: run it on the real robot"**: part B of
+     their cheat sheet, **copied word for word**, with their real folder path
+     in step 3. Don't summarise or shorten it: the user follows it later on
+     their own, without you, so every step and every copy-paste line must be
+     there. End with: "These steps are also saved in `my_cheatsheet.md` in
+     your workshop folder, along with how to run the simulator."
 
 ### Files
 
@@ -354,35 +385,68 @@ Workshop folder: `<workshop folder>`
    ```
 7. Stop a run early: **Ctrl+C**.
 
-## B. Run it on the real robot (test station, mentor present)
+## B. Put your sequence on the real robot
 
-1. Get the mentor's OK. 1 m of clear floor all round the dog; the mentor
-   holds the remote with the **e-stop**.
-2. Ask the mentor for the robot's **user name** and **password**.
-3. Join the robot's Wi-Fi: **AEGIS-2A-…**. (Your internet stops while you're
-   on it. That's normal.)
-4. Open Terminal and go to the workshop folder:
-   ```bash
-   cd "<workshop folder>"
-   ```
-5. Optional: check the robot's camera (a window opens; `q` closes it):
-   ```bash
-   .venv/bin/python motion_eyes.py --source rtsp://192.168.234.1:8554/test
-   ```
-6. Run your sequence on the robot (put the mentor's user name in place of
-   `USER`):
-   ```bash
-   ./robot/run_real.sh USER spin_and_wave.py
-   ```
-7. Type the robot's password when asked, then type `yes` to confirm the floor
-   is clear. The browser shows the planned path while the dog moves.
-8. Stop: **Ctrl+C** (the dog goes limp after the current step). The mentor's
-   e-stop always works too.
-9. If it turns the wrong way, run again with:
-   ```bash
-   FF_GW_YAW_SIGN=-1 ./robot/run_real.sh USER spin_and_wave.py
-   ```
-10. When you're done, switch back to your normal Wi-Fi.
+**Before you start**
+
+- Your sequence says **PASS** in the simulator (part A).
+- You're at a **test station** with a mentor. The mentor holds the remote with
+  the **stop button**.
+- Ask the mentor for the robot's **user name** and **password**.
+- The dog has about **1 metre of empty floor** all around it.
+
+**Step 1. Connect to the robot's Wi-Fi.**
+Click the Wi-Fi icon at the top right of your screen and pick the network
+that starts with **AEGIS-2A-**. Your internet stops working while you're on
+it. That's normal.
+
+**Step 2. Open Terminal.**
+Press **Cmd + Space**, type `Terminal`, press **Enter**.
+
+**Step 3. Go to your workshop folder.**
+Copy this line, paste it into Terminal, press **Enter**:
+```bash
+cd "<workshop folder>"
+```
+
+**Step 4. Start your sequence on the robot.**
+Copy this line and paste it into Terminal. **Before pressing Enter, change
+`USER` to the user name the mentor gave you.**
+```bash
+./robot/run_real.sh USER spin_and_wave.py
+```
+(For a different sequence, change `spin_and_wave.py` to its file name.)
+
+**Step 5. Type the robot's password.**
+Type the password and press **Enter**. Nothing appears while you type; that's
+normal. The very first time, it may ask `Are you sure you want to continue
+connecting?` first: type `yes` and press **Enter**.
+
+**Step 6. Say go.**
+It asks you to confirm the floor is clear. Type `yes` and press **Enter**.
+The dog starts, and your browser shows where it's heading.
+
+**Step 7. Stopping.**
+Press **Control + C** in Terminal at any time: the dog goes limp. The
+mentor's stop button always works too.
+
+**Step 8. When you're done.**
+Switch your Wi-Fi back to your normal network.
+
+**If something goes wrong**
+
+- *"Robot not reachable"*: you're not on the robot's Wi-Fi. Do step 1 again.
+- *"Permission denied"*: wrong user name or password. Check with the mentor
+  and do step 4 again.
+- *The dog turns the wrong way*: use this line in step 4 instead:
+  ```bash
+  FF_GW_YAW_SIGN=-1 ./robot/run_real.sh USER spin_and_wave.py
+  ```
+- *Want to check the robot's camera first?* (The dog doesn't move; press `q`
+  to close the window.)
+  ```bash
+  .venv/bin/python motion_eyes.py --source rtsp://192.168.234.1:8554/test
+  ```
 
 ## C. Check with the FF SDK (if it's installed)
 
@@ -440,36 +504,72 @@ Workshop folder: `<workshop folder>`
    switch back to the simulated camera: `Remove-Item Env:FF_CAMERA`
 7. Stop a run early: **Ctrl+C**.
 
-## B. Run it on the real robot (test station, mentor present)
+## B. Put your sequence on the real robot
 
-1. Get the mentor's OK. 1 m of clear floor all round the dog; the mentor
-   holds the remote with the **e-stop**.
-2. Ask the mentor for the robot's **user name** and **password**.
-3. Join the robot's Wi-Fi: **AEGIS-2A-…**. (Your internet stops while you're
-   on it. That's normal.)
-4. Open PowerShell and go to the workshop folder:
-   ```powershell
-   cd "<workshop folder>"
-   ```
-5. Optional: check the robot's camera (a window opens; `q` closes it):
-   ```powershell
-   .venv\Scripts\python motion_eyes.py --source rtsp://192.168.234.1:8554/test
-   ```
-6. Run your sequence on the robot (put the mentor's user name in place of
-   `USER`):
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 USER spin_and_wave.py
-   ```
-7. A second window opens: type the robot's password there (type `yes` first
-   if it asks about the host key). Come back to the first window and type
-   `yes` to confirm the floor is clear.
-8. Stop: **Ctrl+C** in the first window (the dog goes limp after the current
-   step). The mentor's e-stop always works too.
-9. If it turns the wrong way, run again with:
-   ```powershell
-   $env:FF_GW_YAW_SIGN=-1; powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 USER spin_and_wave.py
-   ```
-10. When you're done, switch back to your normal Wi-Fi.
+**Before you start**
+
+- Your sequence says **PASS** in the simulator (part A).
+- You're at a **test station** with a mentor. The mentor holds the remote with
+  the **stop button**.
+- Ask the mentor for the robot's **user name** and **password**.
+- The dog has about **1 metre of empty floor** all around it.
+
+**Step 1. Connect to the robot's Wi-Fi.**
+Click the Wi-Fi icon at the bottom right of your screen and pick the network
+that starts with **AEGIS-2A-**. Your internet stops working while you're on
+it. That's normal.
+
+**Step 2. Open PowerShell.**
+Press the **Windows key**, type `PowerShell`, press **Enter**.
+
+**Step 3. Go to your workshop folder.**
+Copy this line, paste it into PowerShell (right-click pastes), press **Enter**:
+```powershell
+cd "<workshop folder>"
+```
+
+**Step 4. Start your sequence on the robot.**
+Copy this line and paste it into PowerShell. **Before pressing Enter, change
+`USER` to the user name the mentor gave you.**
+```powershell
+powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 USER spin_and_wave.py
+```
+(For a different sequence, change `spin_and_wave.py` to its file name.)
+
+**Step 5. Type the robot's password in the new window.**
+A second black window opens. Type the password there and press **Enter**.
+Nothing appears while you type; that's normal. The very first time, it may
+ask `Are you sure you want to continue connecting?` first: type `yes` and
+press **Enter**. Leave that window open.
+
+**Step 6. Say go.**
+Go back to the first window. It asks you to confirm the floor is clear. Type
+`yes` and press **Enter**. The dog starts, and your browser shows where it's
+heading.
+
+**Step 7. Stopping.**
+Press **Ctrl + C** in the first window at any time: the dog goes limp. The
+mentor's stop button always works too.
+
+**Step 8. When you're done.**
+Switch your Wi-Fi back to your normal network.
+
+**If something goes wrong**
+
+- *"Robot not reachable"*: you're not on the robot's Wi-Fi. Do step 1 again.
+- *"ssh closed (wrong password?)"*: wrong user name or password. Check with
+  the mentor and do step 4 again.
+- *"ssh not found"*: Settings → System → Optional features → add
+  **OpenSSH Client**, then do step 4 again.
+- *The dog turns the wrong way*: use this line in step 4 instead:
+  ```powershell
+  $env:FF_GW_YAW_SIGN=-1; powershell -ExecutionPolicy Bypass -File robot\run_real.ps1 USER spin_and_wave.py
+  ```
+- *Want to check the robot's camera first?* (The dog doesn't move; press `q`
+  to close the window.)
+  ```powershell
+  .venv\Scripts\python motion_eyes.py --source rtsp://192.168.234.1:8554/test
+  ```
 
 ## C. Check with the FF SDK (if it's installed)
 
@@ -534,4 +634,4 @@ New sequence files go in the workshop folder next to `spin_and_wave.py`, so
 | Webcam window doesn't open (macOS) | System Settings → Privacy & Security → Camera → allow the terminal app |
 | `?` instead of ✓ or → (Windows) | Harmless. Run `chcp 65001` first for proper symbols |
 | `docker: command not found` after installing | `export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin"`, or finish Docker's first-run window |
-| SDK install can't find `ff_sdk` | The zip isn't unpacked at the top of the workshop folder: `aegis_devkit/wheels/` must be next to `START_HERE.md` |
+| 🚨 SDK install can't find `ff_sdk` | The SDK isn't directly in the workshop folder: `aegis_devkit/wheels/` must be next to `START_HERE.md` |

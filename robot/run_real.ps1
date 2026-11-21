@@ -53,6 +53,7 @@ Write-Host "==> tunnel open"
 
 $py = if (Test-Path '.venv\Scripts\python.exe') { '.venv\Scripts\python.exe' } else { 'py' }
 $env:FF_TARGET = 'gateway'
+if (-not $env:FF_SIM_OPEN) { $env:FF_SIM_OPEN = '1' }
 $env:AEGIS_GATEWAY = "http://127.0.0.1:$LocalPort"
 try {
     & $py $Skill

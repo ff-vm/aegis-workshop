@@ -5,9 +5,10 @@ your laptop, then run it on the real robot at a test station.
 
 ## Get started
 
-1. Download the FF SDK file (`ff_sdk_aegis_devkit.zip`) from the link you were
-   given. It has to end up **in the workshop folder itself** (next to
-   `START_HERE.md`); Claude Code moves it there for you.
+1. 🚨 **Download the FF SDK** (`ff_sdk_aegis_devkit.zip`) from the link you
+   were given. **It must be copied into the workshop folder itself** (next to
+   `START_HERE.md`). Claude Code asks where you saved it and copies it in for
+   you.
 2. Paste this into **Claude Code running on your own computer**: the desktop
    app's Code tab with the **Local** environment, or `claude` in a terminal.
    Not Claude Code on the web or a **Cloud** session: those install everything

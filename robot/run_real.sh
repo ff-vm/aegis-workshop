@@ -41,4 +41,4 @@ trap 'ssh -S "$SOCK" -O exit "$HOST" 2>/dev/null || true' EXIT
 # Use the project venv (OpenCV + MediaPipe for camera skills) when there is one.
 PY=python3
 [ -x .venv/bin/python ] && PY=.venv/bin/python
-FF_TARGET=gateway AEGIS_GATEWAY="http://127.0.0.1:$LOCAL_PORT" "$PY" "$SKILL"
+FF_SIM_OPEN="${FF_SIM_OPEN:-1}" FF_TARGET=gateway AEGIS_GATEWAY="http://127.0.0.1:$LOCAL_PORT" "$PY" "$SKILL"
