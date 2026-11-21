@@ -8,12 +8,15 @@ your laptop, then run it on the real robot at a test station.
 1. Download the FF SDK file (`ff_sdk_aegis_devkit.zip`) from the link you were
    given. It has to end up **in the workshop folder itself** (next to
    `START_HERE.md`); Claude Code moves it there for you.
-2. Paste this into **Claude Code**. It asks where to put the workshop, installs
+2. Paste this into **Claude Code running on your own computer**: the desktop
+   app's Code tab with the **Local** environment, or `claude` in a terminal.
+   Not Claude Code on the web or a **Cloud** session: those install everything
+   on a remote computer, not your laptop. It asks where to put the workshop, installs
    everything (Python libraries, the SDK, and Docker on a Mac), and opens the
    first sequence in a terminal and your browser:
 
 ```
-Set up the Aegis robot workshop from https://github.com/ff-vm/aegis-workshop: ask me where to put it, clone it there, then open START_HERE.md in the clone and follow every step, running the commands yourself.
+Set up the Aegis robot workshop on this computer from https://github.com/ff-vm/aegis-workshop: if you're in a cloud session, stop and tell me; otherwise ask me where to put it, clone it there, then open START_HERE.md in the clone and follow every step, running the commands yourself.
 ```
 
 Or follow [START_HERE.md](START_HERE.md) yourself. You need Python 3.9+ and

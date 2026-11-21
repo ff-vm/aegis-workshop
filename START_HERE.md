@@ -35,6 +35,40 @@ A few words they'll meet:
 
 ---
 
+## 0. Make sure you're on the user's own computer
+
+Everything has to end up **on the user's laptop**: the files, the simulator
+in their browser, their webcam, and later their Wi-Fi connection to the robot.
+A cloud session (Claude Code on the web, the desktop app's **Cloud**
+environment, or any remote sandbox) installs it all on a computer they can't
+see, and nothing reaches their laptop.
+
+Before doing anything else, check:
+
+```bash
+echo "remote=$CLAUDE_CODE_REMOTE"              # macOS / Linux
+```
+```powershell
+"remote=$env:CLAUDE_CODE_REMOTE"               # Windows
+```
+
+If it prints `remote=true`, or you know you're running in a cloud or remote
+sandbox (for example your working folder is a fresh clone in a container, or
+there's no way to open a browser or window on the user's screen), **stop
+here** and tell the user:
+
+> I'm running in a cloud session, so anything I install stays on a remote
+> computer, not your laptop. Please start Claude Code **on your own
+> computer** and paste the setup prompt again:
+>
+> - **Claude desktop app:** open the **Code** tab, start a new session, and
+>   choose the **Local** environment (not Cloud), with a folder on your
+>   computer.
+> - **Or the terminal:** install Claude Code from https://claude.com/claude-code,
+>   open Terminal (Windows: PowerShell), and run `claude`.
+
+Don't clone, install, or run anything in the cloud session.
+
 ## 1. Ask two things first
 
 Ask both in one message, and wait for the answers.
